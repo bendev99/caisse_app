@@ -83,8 +83,8 @@ const Parametre = ({ currentUser }) => {
   };
 
   return (
-    <section className="p-6 space-y-5 overflow-auto">
-      <header className="flex items-center justify-between gap-4">
+    <section className="flex min-h-0 flex-1 flex-col gap-5 overflow-hidden p-6">
+      <header className="flex shrink-0 items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-slate-800">Utilisateurs</h2>
           <p className="text-sm text-gray-500">
@@ -99,7 +99,7 @@ const Parametre = ({ currentUser }) => {
       {isFormOpen && (
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-md shadow-md p-5 space-y-4"
+          className="shrink-0 space-y-4 rounded-md bg-white p-5 shadow-md"
         >
           <h3 className="font-semibold">
             {editingUser ? "Modifier un utilisateur" : "Nouvel utilisateur"}
@@ -180,14 +180,14 @@ const Parametre = ({ currentUser }) => {
         </form>
       )}
 
-      <div className="bg-white rounded-md shadow-md overflow-x-auto">
+      <div className="min-h-0 flex-1 overflow-auto rounded-md bg-white shadow-md">
         {loading ? (
           <p className="p-5 text-gray-500">Chargement des utilisateurs…</p>
         ) : users.length === 0 ? (
           <p className="p-5 text-gray-500">Aucun utilisateur pour le moment.</p>
         ) : (
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-gray-600">
+            <thead className="sticky top-0 bg-slate-50 text-gray-600">
               <tr>
                 <th className="p-4 font-medium">Nom</th>
                 <th className="p-4 font-medium">Identifiant</th>

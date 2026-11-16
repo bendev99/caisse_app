@@ -103,19 +103,68 @@ const registerHandlers = () => {
 
   ipcMain.handle("add-produit", (event, produit) => {
     requireAdmin();
-    const { nom, quantite, prix, unite } = produit;
-    database.addProduit(nom, quantite, prix, unite);
+    const { nom, prix } = produit;
+    database.addProduit(nom, prix);
   });
 
   ipcMain.handle("update-produit", (event, produit) => {
     requireAdmin();
-    const { id, nom, quantite, prix, unite } = produit;
-    database.updateProduit(id, nom, quantite, prix, unite);
+    const { id, nom, prix } = produit;
+    database.updateProduit(id, nom, prix);
   });
 
   ipcMain.handle("delete-produit", (event, id) => {
     requireAdmin();
     return database.deleteProduit(id);
+  });
+
+  // ====================
+  //      VENTES
+  // ====================
+  ipcMain.handle("get-ventes", () => {
+    getActiveUser();
+    return database.getVentes();
+  });
+
+  ipcMain.handle("get-vente", (event, id) => {
+    getActiveUser();
+    const vente = database.getVente(id);
+    if (!vente) throw new Error("Cette facture est introuvable.");
+    return vente;
+  });
+
+  ipcMain.handle("get-commandes-en-attente", () => {
+    getActiveUser();
+    return database.getCommandesEnAttente();
+  });
+
+  ipcMain.handle("get-commande", (event, id) => {
+    getActiveUser();
+    const commande = database.getCommande(id);
+    if (!commande || commande.statut !== "en_attente") {
+      throw new Error("Cette commande n’est plus en attente.");
+    }
+    return commande;
+  });
+
+  ipcMain.handle("create-commande", (event, commande) => {
+    const currentUser = getActiveUser();
+    return database.createCommande(commande, currentUser.id);
+  });
+
+  ipcMain.handle("update-commande", (event, commande) => {
+    getActiveUser();
+    return database.updateCommande(commande);
+  });
+
+  ipcMain.handle("cancel-commande", (event, id) => {
+    getActiveUser();
+    return database.cancelCommande(id);
+  });
+
+  ipcMain.handle("encaisser-commande", (event, { id, paiement }) => {
+    const currentUser = getActiveUser();
+    return database.encaisserCommande(id, paiement, currentUser.id);
   });
 
   // ====================
@@ -159,6 +208,8 @@ const registerHandlers = () => {
 
       const device = new escpos.USB();
       const printer = new escpos.Printer(device);
+      const formatMoney = (value) =>
+        Number(value || 0).toLocaleString("fr-FR", { maximumFractionDigits: 2 });
 
       // Ouverture USB
       await new Promise((resolve, reject) => {
@@ -176,6 +227,8 @@ const registerHandlers = () => {
         .text(invoiceData.storeName || "MON MAGASIN")
         .text(`Ticket: ${invoiceData.ticketId || "N/A"}`)
         .text(`Date: ${new Date().toLocaleString()}`)
+        .text(`Caissier: ${invoiceData.cashierName || "Inconnu"}`)
+        .text(`Paiement: ${invoiceData.paymentMethod || "N/A"}`)
         .text("--------------------------------") // Séparateur manuel
         .control("LF") // Saut de ligne
         .align("lt")
@@ -196,9 +249,19 @@ const registerHandlers = () => {
         .align("rt")
         .font("a")
         .size(1, 1)
-        .text(`TOTAL: ${Number(invoiceData.total).toFixed(2)} €`)
+        .text(`TOTAL: ${formatMoney(invoiceData.total)} Ar`)
         .size(0, 0)
-        .control("LF")
+        .control("LF");
+
+      if (invoiceData.paymentMethod === "Espèces") {
+        printer
+          .align("rt")
+          .text(`Reçu: ${formatMoney(invoiceData.amountPaid)} Ar`)
+          .text(`Rendu: ${formatMoney(invoiceData.change)} Ar`)
+          .control("LF");
+      }
+
+      printer
         .align("ct")
         .text("Merci de votre visite !")
         .control("LF")

@@ -17,6 +17,16 @@ contextBridge.exposeInMainWorld("api", {
   updateProduit: (produit) => ipcRenderer.invoke("update-produit", produit),
   deleteProduit: (id) => ipcRenderer.invoke("delete-produit", id),
 
+  getVentes: () => ipcRenderer.invoke("get-ventes"),
+  getVente: (id) => ipcRenderer.invoke("get-vente", id),
+  getCommandesEnAttente: () => ipcRenderer.invoke("get-commandes-en-attente"),
+  getCommande: (id) => ipcRenderer.invoke("get-commande", id),
+  createCommande: (commande) => ipcRenderer.invoke("create-commande", commande),
+  updateCommande: (commande) => ipcRenderer.invoke("update-commande", commande),
+  cancelCommande: (id) => ipcRenderer.invoke("cancel-commande", id),
+  encaisserCommande: (id, paiement) =>
+    ipcRenderer.invoke("encaisser-commande", { id, paiement }),
+
   getUnites: () => ipcRenderer.invoke("get-unites"),
   getUnite: (id) => ipcRenderer.invoke("get-unite", id),
   addUnite: (unite) => ipcRenderer.invoke("add-unite", unite),

@@ -3,9 +3,11 @@ import {
   AiOutlineHistory,
   AiOutlineSetting,
 } from "react-icons/ai";
+import { BiBox } from "react-icons/bi";
 
 const MENU = [
   { id: "home", icon: AiOutlineHome, title: "Accueil" },
+  { id: "products", icon: BiBox, title: "Menus" },
   { id: "history", icon: AiOutlineHistory, title: "Historique" },
   { id: "settings", icon: AiOutlineSetting, title: "Paramètres" },
 ];

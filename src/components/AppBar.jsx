@@ -10,7 +10,7 @@ const AppBar = ({ title }) => {
   });
 
   return (
-    <nav className="flex w-full bg-white p-5 shadow items-center justify-between">
+    <nav className="flex w-full shrink-0 items-center justify-between bg-white p-5 shadow">
       <h2 className="text-2xl font-bold">{title}</h2>
       <p className="text-md text-gray-400 font-semibold mx-auto">{today}</p>
       <div className="bg-teal-500 p-2 items-center justify-center rounded-full">

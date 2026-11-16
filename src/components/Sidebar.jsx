@@ -2,9 +2,10 @@ import { BiChevronRight, BiLogOut } from "react-icons/bi";
 import { MENU } from "../utils/utils";
 
 const Sidebar = ({ activePage, onNavigate, currentUser, onLogout }) => {
-  const menu = currentUser.role === "admin"
-    ? MENU
-    : MENU.filter(({ id }) => id !== "settings");
+  const menu =
+    currentUser.role === "admin"
+      ? MENU
+      : MENU.filter(({ id }) => id !== "settings" && id !== "products");
 
   return (
     <div className="fixed top-0 left-0 h-full z-40 bg-slate-900 text-white flex flex-col transition-all duration-300 ease-in-out overflow-hidden w-56">

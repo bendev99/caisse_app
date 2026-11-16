@@ -4,8 +4,9 @@ import Sidebar from "../components/Sidebar";
 import Historique from "./Historique";
 import Parametre from "./Parametre";
 import Connexion from "./Connexion";
+import Produits from "./Produits";
 import AppBar from "../components/AppBar";
-import { BiHome } from "react-icons/bi";
+import { BiBox, BiHome } from "react-icons/bi";
 import { AiOutlineHistory, AiOutlineSetting } from "react-icons/ai";
 import toast from "react-hot-toast";
 
@@ -66,6 +67,8 @@ const Layout = () => {
     switch (activeSide) {
       case "home":
         return <Dashboard currentUser={currentUser} />;
+      case "products":
+        return currentUser.role === "admin" ? <Produits /> : <Dashboard />;
       case "history":
         return <Historique />;
       case "settings":
@@ -85,14 +88,21 @@ const Layout = () => {
         return (
           <div className="flex gap-2 items-center">
             <BiHome size={24} />
-            <h1>Tableau de bord</h1>
+            <h1>Point de vente</h1>
           </div>
         );
       case "history":
         return (
           <div className="flex gap-2 items-center">
             <AiOutlineHistory size={24} />
-            <h1>Historique des commandes</h1>
+            <h1>Historique des ventes</h1>
+          </div>
+        );
+      case "products":
+        return (
+          <div className="flex gap-2 items-center">
+            <BiBox size={24} />
+            <h1>Gestion des menus</h1>
           </div>
         );
       case "settings":
@@ -113,15 +123,15 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex min-h-screen max-w-screen bg-gray-100">
-    <Sidebar
-      activePage={activeSide}
-      onNavigate={setActiveSide}
-      currentUser={currentUser}
-      onLogout={handleLogout}
-    />
+    <div className="flex h-screen max-w-screen overflow-hidden bg-gray-100">
+      <Sidebar
+        activePage={activeSide}
+        onNavigate={setActiveSide}
+        currentUser={currentUser}
+        onLogout={handleLogout}
+      />
 
-      <main className="flex-1 flex flex-col overflow-hidden transition-all duration-300 ml-56">
+      <main className="ml-56 flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden transition-all duration-300">
         <AppBar title={titlePage()} />
         {renderPage()}
       </main>

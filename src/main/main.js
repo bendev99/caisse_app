@@ -1,14 +1,15 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
-const db = require("../db/database");
 
 const { registerHandlers } = require("./handlers");
 registerHandlers();
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 800,
+    minWidth: 1024,
+    minHeight: 680,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
